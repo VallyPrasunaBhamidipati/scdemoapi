@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:cps="http://www.mulesoft.org/schema/mule/cps" 
+	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/cps http://www.mulesoft.org/schema/mule/cps/current/mule-cps.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	<db:config name="SC_Qa" doc:name="Database Config" doc:id="ee008228-e59d-4918-b723-c7dcdeeb1686" >
+		<db:generic-connection url="jdbc:postgresql://${db_host}:${db_port}/${db_name}?sslmode=verify-ca&amp;sslcert=${mule.home}/apps/${app.name}/demo_postgresql.crt&amp;sslkey=${mule.home}/apps/${app.name}/postgresql.key.der&amp;sslrootcert=${mule.home}/apps/${app.name}/demo_root.crt" driverClassName="org.postgresql.Driver" user="${db_username}" password="${db_password}" />
+	</db:config>
+	<api-gateway:autodiscovery apiId="18107383" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="d3026cf6-7641-4af0-ac60-f21c1683f5e7" flowRef="solution-central-demo-api-main"/>
+	<http:listener-config name="solution-central-demo-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${https.port}" />
+    </http:listener-config>	
+    <cps:config name="Configuration_Properties_Service_Config" doc:name="Configuration-properties-service Config" configServerBaseUrl="${cps.configServerBaseUrl}" projectName="${cps.projectName}" environment="${cps.prefix}" clientId="${cps.clientId}" clientSecret="${cps.clientSecret}" appName="${cps.projectName}" configId="cps-config" />
+</mule>
+	

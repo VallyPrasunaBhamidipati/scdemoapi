@@ -1,0 +1,15 @@
+%dw 2.0
+
+type auto_673d4142_769e_4b6e_968c_1f27fe9e79a3_Output_Payload = Array<{  featured: Boolean,   downloads: Array<Any>, 
+  description: String, 
+  id: String, 
+  featuredDesignCenter: Boolean, 
+  title: String, 
+  maintenance: Array<Any>, 
+  slug: String, 
+  content: String, 
+  status: String, 
+  revision: String, 
+  _?: Any
+}>
+

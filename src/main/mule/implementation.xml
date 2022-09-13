@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<file:config name="File_Config" doc:name="File Config" doc:id="22df008b-dfeb-4260-8310-613cf57eba5e" />
+	<flow name="GetPosts" doc:id="673d4142-769e-4b6e-968c-1f27fe9e79a3">
+		<logger level="INFO" doc:name="Logger" doc:id="defb90bc-b326-4771-a2d5-09f95cc80545" message="#[attributes.queryParams]"/>
+		<set-variable value="#[if(attributes.queryParams.createdBy?) &#10;'where &quot;createdBy&quot;=\'$(attributes.queryParams.createdBy)\''&#10;else &quot;&quot;]" doc:name="Set Variable" doc:id="c77ced6f-2186-4e0b-8a22-912939c774c5" variableName="dynamicQuery"/>
+		<db:select doc:name="Select" doc:id="001ca451-16a8-4fa3-afc1-a9ed83f1f4d6" config-ref="SC_Qa">
+			<db:sql><![CDATA[#["SELECT * FROM posts  $(vars.dynamicQuery) limit 10"]]]></db:sql>
+		</db:select>
+		<ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	featured: payload01.featured default true,
+	downloads: payload01.downloads default [],
+	description: payload01.description default "",
+	id: payload01.id as String,
+	featuredDesignCenter: payload01.featuredDesignCenter default true,
+	title: payload01.title,
+	maintenance: payload01.maintenance default [],
+	slug: payload01.slug default "",
+	content: payload01.content default "",
+	status: payload01.status default "",
+	revision: payload01.revision as String default ""
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="SayHello" doc:id="a156b8ab-9461-4ab6-b434-ea233aea1805">
+		<logger level="INFO" doc:name="Logger" doc:id="c9b8c051-b407-4d43-885d-584b9943aef8" message="#[payload]" />
+		<set-payload value="Helloooo Hai" doc:name="Set Payload" doc:id="1b54dda6-4aea-4083-82fe-b34b90668eed" />
+    </flow>
+</mule>
